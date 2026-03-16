@@ -2,7 +2,10 @@ import { CanActivate, ExecutionContext, UnauthorizedException } from "@nestjs/co
 import {JwtService} from "@nestjs/jwt"
 
 export class AuthGuard implements CanActivate {
-    constructor(private jwtService: JwtService) {}
+    private jwtService = new JwtService({
+        secret: process.env.JWT_SECRET,
+        signOptions: { expiresIn: '1h' }
+    })
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const getRequest = context.switchToHttp().getRequest();
