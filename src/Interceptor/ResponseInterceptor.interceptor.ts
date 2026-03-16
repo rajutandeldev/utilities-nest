@@ -1,5 +1,5 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 export class ResponseInterceptor implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any>{
          return next.handle().pipe(
@@ -7,7 +7,7 @@ export class ResponseInterceptor implements NestInterceptor {
                 let  responseObject:any;
                 if(data && data?.length > 0){
                     responseObject = {
-                        status: "success",
+                        success: true,
                         data:{
                             list: data,
                         },
@@ -15,7 +15,7 @@ export class ResponseInterceptor implements NestInterceptor {
                     }
                 }else{
                     responseObject = {
-                        status: "success",
+                        success: true,
                         data,
                         error:null
                     }
@@ -23,6 +23,13 @@ export class ResponseInterceptor implements NestInterceptor {
                 return {
                     ...responseObject
                 }
+            }),
+            catchError((err)=>{
+                return of({
+                    success: false,
+                    data:null,
+                    error: err.message || 'An error occurred'
+                })
             })
          );
     }
