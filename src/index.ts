@@ -1,3 +1,3 @@
-export * from './Interceptor/ResponseInterceptor.interceptor'
-export * from './Guard/auth-guard'
+export * from './Interceptor/response.interceptor'
+export * from './guard/auth-guard'
 export * from './utils/logger'
